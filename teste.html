@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locadora de Veículos - Gerenciador de Clientes</title>
+    <style>
+        /* Estilos globais */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Impede rolagem no body */
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            height: 90vh; /* Altura fixa para o contêiner */
+            overflow: hidden; /* Evita overflow no contêiner */
+        }
+
+        /* Tela de Login */
+        #login-page {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+        #login-box {
+            width: 300px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: slideIn 0.5s ease;
+        }
+        #login-box h2 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #333;
+        }
+        #login-box input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        #login-box input:focus {
+            border-color: #2a5298;
+        }
+        #login-box button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #login-box button:hover {
+            background-color: #1e3c72;
+        }
+        #login-box a {
+            color: #2a5298;
+            text-decoration: none;
+            margin-top: 10px;
+            display: block;
+        }
+
+        /* Barra lateral de botões */
+        .sidebar {
+            width: 180px;
+            margin-right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto; /* Permite rolagem na barra lateral se necessário */
+            height: 100%; /* Altura total do contêiner */
+        }
+        .sidebar .button {
+            background: #2a5298;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .sidebar .button:hover {
+            background: #1e3c72;
+            transform: scale(1.05);
+        }
+
+        /* Seção de cadastro de clientes e veículos */
+        .vehicles-section {
+            flex: 1;
+            padding-left: 20px;
+            overflow-y: auto; /* Permite rolagem no conteúdo principal */
+        }
+
+        /* Veículos disponíveis */
+        .vehicles {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .vehicle-card {
+            width: 220px;
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s;
+        }
+        .vehicle-card:hover {
+            transform: translateY(-10px);
+        }
+        .vehicle-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .vehicle-card h3 {
+            color: #333;
+            margin: 10px 0 5px;
+        }
+        .vehicle-card p {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Seção de cadastro de clientes */
+        #register-client-page {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px; /* Espaço superior para o formulário */
+        }
+        #register-client-page input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        #register-client-page input:focus {
+            border-color: #2a5298;
+        }
+        #register-client-page button {
+            padding: 12px;
+            background-color: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #register-client-page button:hover {
+            background-color: #1e3c72;
+        }
+
+        /* Seção de cadastro de veículos */
+        #register-vehicle-page {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+        #register-vehicle-page input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        #register-vehicle-page input:focus {
+            border-color: #2a5298;
+        }
+        #register-vehicle-page button {
+            padding: 12px;
+            background-color: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #register-vehicle-page button:hover {
+            background-color: #1e3c72;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Tela de Login -->
+<div id="login-page">
+    <div id="login-box">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Senha" required>
+        <button id="login-btn">Entrar</button>
+        <a href="#">Cadastre-se</a>
+    </div>
+</div>
+
+<!-- Tela Principal -->
+<div id="main-page" class="container" style="display: none;">
+    <!-- Barra lateral de botões -->
+    <div class="sidebar">
+        <div class="button" id="register-client-btn">Cadastrar Clientes</div>
+        <div class="button" id="register-vehicle-btn">Cadastrar Carros</div>
+        <div class="button" id="logout-btn" style="background-color: #dc3545;">Sair</div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="vehicles-section">
+        <h1>Gerenciador de Clientes</h1>
+
+        <h2>Veículos Disponíveis</h2>
+        <div class="vehicles">
+            <div class="vehicle-card">
+                <img src="/image/carro.png" alt="Lamborghini Huracan">
+                <h3>Lamborghini Huracan</h3>
+                <p>R$ 2.500,00 /d</p>
+            </div>
+            <div class="vehicle-card">
+                <img src="/image/Camaro.png" alt="Camaro">
+                <h3>Camaro</h3>
+                <p>R$ 500,00 /d</p>
+            </div>
+            <div class="vehicle-card">
+                <img src="/image/Porsche.png" alt="Porsche">
+                <h3>Porsche</h3>
+                <p>R$ 850,00 /d</p>
+            </div>
+            <div class="vehicle-card">
+                <img src="/image/Ferrari (2).png" alt="Ferrari Spider">
+                <h3>Ferrari Spider</h3>
+                <p>R$ 4.000,00 /d</p>
+            </div>
+        </div>
+
+        <!-- Cadastro de Clientes -->
+        <div id="register-client-page">
+            <h2>Cadastrar Clientes</h2>
+            <input type="text" id="client-name" placeholder="Nome do Cliente" required>
+            <input type="email" id="client-email" placeholder="Email do Cliente" required>
+            <input type="tel" id="client-phone" placeholder="Telefone do Cliente" required>
+            <button id="register-client-btn-submit">Cadastrar Cliente</button>
+        </div>
+
+        <!-- Cadastro de Veículos -->
+        <div id="register-vehicle-page">
+            <h2>Cadastrar Carro</h2>
+            <input type="text" id="vehicle-name" placeholder="Nome do Carro" required>
+            <input type="date" id="rental-start" placeholder="Data de Início da Locação" required>
+            <input type="date" id="rental-end" placeholder="Data de Entrega da Locação" required>
+            <textarea id="description" rows="4" placeholder="Descrição do Carro" required></textarea>
+            <button id="register-vehicle-btn-submit">Cadastrar Carro</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('login-btn').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if (email && password) {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-page').style.display = 'flex';
+        } else {
+            alert("Por favor, insira um email e uma senha!");
+        }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', function() {
+        document.getElementById('main-page').style.display = 'none';
+        document.getElementById('login-page').style.display = 'flex';
+    });
+
+    document.getElementById('register-client-btn').addEventListener('click', function() {
+        const clientPage = document.getElementById('register-client-page');
+        const vehiclePage = document.getElementById('register-vehicle-page');
+        // Alterna entre mostrar o cadastro de clientes e ocultar o de veículos
+        clientPage.style.display = clientPage.style.display === 'none' ? 'flex' : 'none';
+        vehiclePage.style.display = 'none'; // Oculta a seção de veículos ao abrir clientes
+    });
+
+    document.getElementById('register-vehicle-btn').addEventListener('click', function() {
+        const vehiclePage = document.getElementById('register-vehicle-page');
+        const clientPage = document.getElementById('register-client-page');
+        // Alterna entre mostrar o cadastro de veículos e ocultar o de clientes
+        vehiclePage.style.display = vehiclePage.style.display === 'none' ? 'flex' : 'none';
+        clientPage.style.display = 'none'; // Oculta a seção de clientes ao abrir veículos
+    });
+
+    document.getElementById('register-vehicle-btn-submit').addEventListener('click', function() {
+        const vehicleName = document.getElementById('vehicle-name').value;
+        const rentalStart = document.getElementById('rental-start').value;
+        const rentalEnd = document.getElementById('rental-end').value;
+        const description = document.getElementById('description').value;
+
+        if (vehicleName && rentalStart && rentalEnd && description) {
+            alert(`Carro ${vehicleName} cadastrado com sucesso!`);
+            // Aqui você pode adicionar a lógica para processar os dados do veículo
+            // Limpar campos do formulário de veículo após o registro
+            document.getElementById('vehicle-name').value = '';
+            document.getElementById('rental-start').value = '';
+            document.getElementById('rental-end').value = '';
+            document.getElementById('description').value = '';
+        } else {
+            alert("Por favor, preencha todos os campos!");
+        }
+    });
+
+    document.getElementById('register-client-btn-submit').addEventListener('click', function() {
+        const clientName = document.getElementById('client-name').value;
+        const clientEmail = document.getElementById('client-email').value;
+        const clientPhone = document.getElementById('client-phone').value;
+
+        if (clientName && clientEmail && clientPhone) {
+            alert(`Cliente ${clientName} cadastrado com sucesso!`);
+            // Aqui você pode adicionar a lógica para processar os dados do cliente
+            document.getElementById('client-name').value = '';
+            document.getElementById('client-email').value = '';
+            document.getElementById('client-phone').value = '';
+        } else {
+            alert("Por favor, preencha todos os campos do cliente!");
+        }
+    });
+</script>
+</body>
+</html>
